@@ -1,6 +1,7 @@
 import React from 'react';
+import { HeaderLogoProps } from '../../interfaces';
 import styles from './styles.module.scss';
 
-export default function HeaderLogo() {
-  return <div className={styles.logo}>Quiz</div>;
+export default function HeaderLogo({ logo }: HeaderLogoProps) {
+  return <div className={styles.logo}>{logo}</div>;
 }

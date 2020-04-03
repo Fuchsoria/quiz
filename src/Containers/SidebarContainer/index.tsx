@@ -8,7 +8,14 @@ const { Sider } = Layout;
 export default function SidebarContainer() {
   return (
     <Sider className={styles.sider}>
-      <SidebarMenu />
+      <SidebarMenu
+        submenus={[
+          {
+            title: 'Categories',
+            categories: [{ title: 'Animals' }, { title: 'Logos' }, { title: 'Series' }, { title: 'Anime' }]
+          }
+        ]}
+      />
     </Sider>
   );
 }

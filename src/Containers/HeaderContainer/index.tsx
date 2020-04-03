@@ -8,9 +8,16 @@ const { Header } = Layout;
 
 export default function HeaderContainer() {
   return (
-    <Header className={styles.header}>
-      <HeaderLogo />
-      <HeaderMenu />
+    <Header>
+      <header className={styles.header}>
+        <HeaderLogo logo={'Quiz'} />
+        <HeaderMenu
+          menuItems={[
+            { name: 'Home', link: 'home', disabled: false },
+            { name: 'Profile', link: 'profile', disabled: true }
+          ]}
+        />
+      </header>
     </Header>
   );
 }

@@ -1,12 +1,7 @@
 import React from 'react';
+import { QuestionImageProps } from '../../interfaces';
 import styles from './styles.module.scss';
 
-export default function QuestionImage() {
-  return (
-    <img
-      className={styles.image}
-      src="https://images.unsplash.com/photo-1534430480872-3498386e7856?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=80"
-      alt="city"
-    />
-  );
+export default function QuestionImage({ source }: QuestionImageProps) {
+  return <img className={styles.image} src={source} alt="quiz question" />;
 }
