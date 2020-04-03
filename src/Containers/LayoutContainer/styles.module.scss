@@ -1,0 +1,17 @@
+.layout {
+  min-height: 100vh;
+}
+
+.content-layout {
+  padding: 0 0 24px 24px;
+}
+
+.container {
+  max-width: 1440px;
+  width: 100%;
+  display: block;
+  margin: 0 auto;
+  &_flex {
+    display: flex;
+  }
+}
