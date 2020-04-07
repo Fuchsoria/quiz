@@ -31,6 +31,6 @@ const quizzes = [
   }
 ];
 
-const profile = { name: 'Kokoro', quizzesDone: 150, doneIds: [0] };
+const profile = { name: 'Kokoro', quizzesDone: 150, doneIds: [] };
 
 export { quizzes, profile };

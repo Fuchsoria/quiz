@@ -5,6 +5,7 @@ import { ContentContainerProps } from '../../interfaces';
 import Quiz from '../../Components/Quiz';
 import QuizProgress from '../../Components/QuizProgress';
 import QuizErrorMessage from '../../Components/QuizErrorMessage';
+import { setLatestAnswer, clearLatestAnswer } from '../../Store/answersActions';
 import styles from './styles.module.scss';
 
 const { Content } = Layout;
@@ -18,13 +19,29 @@ class ContentContainer extends Component<ContentContainerProps> {
     this.correctAnswerId = '';
   }
 
+  unsetLatestAnswer = (id: string) => () => {
+    this.props.dispatch(clearLatestAnswer(id));
+  };
+
+  handleCorrectAnswer = (id: string) => {
+    this.props.dispatch(setLatestAnswer(id, true));
+  };
+
+  handleIncorrectAnswer = (id: string) => {
+    this.props.dispatch(setLatestAnswer(id, false));
+    setTimeout(this.unsetLatestAnswer(id), 2000);
+  };
+
   handleAnswer = (id: string) => () => {
-    console.log(id === this.correctAnswerId ? 'Answer is Correct!' : 'Answer is not correct');
+    if (id === this.correctAnswerId) {
+      this.handleCorrectAnswer(id);
+    } else {
+      this.handleIncorrectAnswer(id);
+    }
     console.log('Answer ID', id);
   };
 
   render() {
-    console.log(this.props);
     const currentCategoryName = this.props.quizNavigation.current;
     const [currentCategory] = this.props.quizzes.filter(({ title }) => title === currentCategoryName);
     const allQuizzes = currentCategory && currentCategory.quizzes.length > 0 ? currentCategory.quizzes : [];
@@ -32,7 +49,7 @@ class ContentContainer extends Component<ContentContainerProps> {
       ? currentCategory.quizzes.filter(({ id }) => !this.props.profile.doneIds.includes(id))
       : [];
     const currentQuiz = notDoneQuizzes.length ? notDoneQuizzes[0] : null;
-    console.log(currentQuiz);
+
     this.correctAnswerId = currentQuiz && currentQuiz.correctAnswerId ? currentQuiz.correctAnswerId : '';
 
     return (
