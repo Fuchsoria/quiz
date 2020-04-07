@@ -1,6 +1,9 @@
 export interface AnswerProps {
   answer: string;
   id: string;
+  isCorrect?: boolean;
+  isLatest?: boolean;
+  isDisabled?: boolean;
   handleAnswer: (id: string) => () => void;
 }
 export interface HeaderLogoProps {
@@ -29,6 +32,8 @@ export interface AnswersListProps {
     name: string;
   }[];
   handleAnswer: (id: string) => () => void;
+  answersStore: { latestAnswer: string; isCorrect: boolean };
+  isDisabled: boolean;
 }
 
 export interface SidebarMenuProps {
@@ -63,7 +68,8 @@ export interface ContentContainerProps {
       answers: { id: string; name: string }[];
     }[];
   }[];
-  profile: { doneIds: number[] };
+  profile: { doneIds: number[]; failures: { [propName: string]: number } };
+  dispatch(action: any): void;
 }
 
 export interface QuizProps {
@@ -79,4 +85,16 @@ export interface QuizProps {
 
 export interface QuizErrorMessageProps {
   message: string;
+}
+
+export interface LayoutContainerProps {
+  quizNavigation: {
+    current: string;
+  };
+}
+
+export interface QuizBreadcrumbProps {
+  quizNavigation: {
+    current: string;
+  };
 }

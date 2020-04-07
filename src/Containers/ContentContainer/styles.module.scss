@@ -1,6 +1,13 @@
 .content {
+  user-select: none;
   background: #fff;
   margin: 0;
   padding: 24px;
   min-height: 280px;
+  &__infos {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 15px;
+  }
 }

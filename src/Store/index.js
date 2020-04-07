@@ -2,11 +2,13 @@ import { createStore, combineReducers } from 'redux';
 import quizzesReducer from './quizzesReducer';
 import userReducer from './userReducer';
 import navigationReducer from './navigationReducer';
+import answersReducer from './answersReducer';
 
 const reducer = combineReducers({
   quizzes: quizzesReducer,
   profile: userReducer,
   quizNavigation: navigationReducer,
+  answers: answersReducer
 });
 
 export function initStore(preloadedState = undefined) {
