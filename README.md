@@ -1,4 +1,5 @@
 # Quiz
+Demo Link: [https://gh.fuchsoria.dev/quiz/](https://gh.fuchsoria.dev/quiz/)
 
 ## Available Scripts
 
