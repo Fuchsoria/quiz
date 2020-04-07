@@ -1,24 +1,36 @@
 import React from 'react';
 import { Menu } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import { SidebarMenuProps } from '../../interfaces';
 import styles from './styles.module.scss';
 
 const { SubMenu, Item } = Menu;
-const title: JSX.Element = (
+const createTitle = (title: string): JSX.Element => (
   <span>
-    <UserOutlined /> Categories
+    <UserOutlined /> {title}
   </span>
 );
 
-export default function SidebarMenu() {
+export default function SidebarMenu({ submenus, handleCategoryClick }: SidebarMenuProps) {
+  const firstMenu = submenus[0];
+  const firstMenuItem = firstMenu.categories[0];
+
   return (
-    <Menu mode="inline" defaultSelectedKeys={['1']} defaultOpenKeys={['sub1']} className={styles.menu}>
-      <SubMenu key="sub1" title={title}>
-        <Item key="1">Animals</Item>
-        <Item key="2">Logos</Item>
-        <Item key="4">Series</Item>
-        <Item key="3">Anime</Item>
-      </SubMenu>
+    <Menu
+      mode="inline"
+      defaultSelectedKeys={[firstMenuItem.title]}
+      defaultOpenKeys={[firstMenu.title]}
+      className={styles.menu}
+    >
+      {submenus.map(({ title, categories }) => (
+        <SubMenu key={title} title={createTitle(title)}>
+          {categories.map((category) => (
+            <Item key={category.title} onClick={handleCategoryClick(category.title)}>
+              {category.title}
+            </Item>
+          ))}
+        </SubMenu>
+      ))}
     </Menu>
   );
 }
