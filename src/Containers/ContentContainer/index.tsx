@@ -2,34 +2,47 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Layout } from 'antd';
 import { ContentContainerProps } from '../../interfaces';
+import { DELAY_AFTER_ANSWER } from '../../Configurations/config';
 import Quiz from '../../Components/Quiz';
 import QuizProgress from '../../Components/QuizProgress';
 import QuizErrorMessage from '../../Components/QuizErrorMessage';
 import { setLatestAnswer, clearLatestAnswer } from '../../Store/answersActions';
+import { addDoneQuiz, addFailure } from '../../Store/userActions';
 import styles from './styles.module.scss';
 
 const { Content } = Layout;
 
 class ContentContainer extends Component<ContentContainerProps> {
   private correctAnswerId: string;
+  private currentCategoryName: string;
+  private quizId: number;
 
   constructor(props: ContentContainerProps) {
     super(props);
 
     this.correctAnswerId = '';
+    this.currentCategoryName = '';
+    this.quizId = 0;
   }
 
-  unsetLatestAnswer = (id: string) => () => {
+  unsetLatestAnswer = (id: string) => {
     this.props.dispatch(clearLatestAnswer(id));
+  };
+
+  addDoneQuizToProfile = (answerId: string, quizId: number) => {
+    this.unsetLatestAnswer(answerId);
+    this.props.dispatch(addDoneQuiz(quizId));
   };
 
   handleCorrectAnswer = (id: string) => {
     this.props.dispatch(setLatestAnswer(id, true));
+    setTimeout(() => this.addDoneQuizToProfile(id, this.quizId), DELAY_AFTER_ANSWER);
   };
 
   handleIncorrectAnswer = (id: string) => {
     this.props.dispatch(setLatestAnswer(id, false));
-    setTimeout(this.unsetLatestAnswer(id), 2000);
+    this.props.dispatch(addFailure(this.currentCategoryName));
+    setTimeout(() => this.unsetLatestAnswer(id), DELAY_AFTER_ANSWER);
   };
 
   handleAnswer = (id: string) => () => {
@@ -38,37 +51,48 @@ class ContentContainer extends Component<ContentContainerProps> {
     } else {
       this.handleIncorrectAnswer(id);
     }
-    console.log('Answer ID', id);
   };
 
   render() {
+    if (!this.props.quizNavigation.current || !this.props.quizzes.length) {
+      return null;
+    }
+
     const currentCategoryName = this.props.quizNavigation.current;
     const [currentCategory] = this.props.quizzes.filter(({ title }) => title === currentCategoryName);
-    const allQuizzes = currentCategory && currentCategory.quizzes.length > 0 ? currentCategory.quizzes : [];
-    const notDoneQuizzes = currentCategory
-      ? currentCategory.quizzes.filter(({ id }) => !this.props.profile.doneIds.includes(id))
-      : [];
-    const currentQuiz = notDoneQuizzes.length ? notDoneQuizzes[0] : null;
+    const allQuizzes = currentCategory.quizzes;
+    const notDoneQuizzes = currentCategory.quizzes.filter(({ id }) => !this.props.profile.doneIds.includes(id));
+    const currentQuiz = notDoneQuizzes[0];
+    const currentFailures = this.props.profile.failures[currentCategoryName] || 0;
 
-    this.correctAnswerId = currentQuiz && currentQuiz.correctAnswerId ? currentQuiz.correctAnswerId : '';
+    this.correctAnswerId = currentQuiz && currentQuiz.correctAnswerId;
+    this.currentCategoryName = currentCategoryName;
+    this.quizId = currentQuiz && currentQuiz.id;
 
-    return (
-      <Content className={styles.content}>
-        {allQuizzes.length <= 0 && <QuizErrorMessage message="No quizzes in this category." />}
-        {!currentQuiz && allQuizzes.length > 0 && (
-          <>
+    if (allQuizzes.length <= 0) {
+      return (
+        <Content className={styles.content}>
+          <QuizErrorMessage message="No quizzes in this category." />
+        </Content>
+      );
+    } else if (!currentQuiz && allQuizzes.length > 0) {
+      return (
+        <Content className={styles.content}>
+          <QuizProgress done={allQuizzes.length - notDoneQuizzes.length} max={allQuizzes.length} />
+          <QuizErrorMessage message={`You have done all Quizzes! With ${currentFailures} failures`} />
+        </Content>
+      );
+    } else if (currentQuiz && allQuizzes.length > 0) {
+      return (
+        <Content className={styles.content}>
+          <div className={styles['content__infos']}>
+            <p>Failures: {currentFailures}</p>
             <QuizProgress done={allQuizzes.length - notDoneQuizzes.length} max={allQuizzes.length} />
-            <QuizErrorMessage message="You have done all Quizzes!" />
-          </>
-        )}
-        {currentQuiz && allQuizzes.length > 0 && (
-          <>
-            <QuizProgress done={allQuizzes.length - notDoneQuizzes.length} max={allQuizzes.length} />
-            <Quiz current={currentQuiz} handleAnswer={this.handleAnswer} />
-          </>
-        )}
-      </Content>
-    );
+          </div>
+          <Quiz current={currentQuiz} handleAnswer={this.handleAnswer} />
+        </Content>
+      );
+    }
   }
 }
 

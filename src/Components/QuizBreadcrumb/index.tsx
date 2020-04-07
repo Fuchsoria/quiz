@@ -1,15 +1,16 @@
 import React from 'react';
 import { Breadcrumb } from 'antd';
+import { QuizBreadcrumbProps } from '../../interfaces';
 import styles from './styles.module.scss';
 
 const { Item } = Breadcrumb;
 
-export default function QuizBreadcrumb() {
+export default function QuizBreadcrumb({ quizNavigation }: QuizBreadcrumbProps) {
   return (
     <Breadcrumb className={styles.breadcrumb}>
       <Item>Home</Item>
-      <Item>List</Item>
-      <Item>App</Item>
+      <Item>Categories</Item>
+      <Item>{quizNavigation.current}</Item>
     </Breadcrumb>
   );
 }

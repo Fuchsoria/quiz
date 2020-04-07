@@ -68,7 +68,7 @@ export interface ContentContainerProps {
       answers: { id: string; name: string }[];
     }[];
   }[];
-  profile: { doneIds: number[] };
+  profile: { doneIds: number[]; failures: { [propName: string]: number } };
   dispatch(action: any): void;
 }
 
@@ -85,4 +85,16 @@ export interface QuizProps {
 
 export interface QuizErrorMessageProps {
   message: string;
+}
+
+export interface LayoutContainerProps {
+  quizNavigation: {
+    current: string;
+  };
+}
+
+export interface QuizBreadcrumbProps {
+  quizNavigation: {
+    current: string;
+  };
 }
