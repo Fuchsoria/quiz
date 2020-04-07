@@ -11,7 +11,7 @@ const createTitle = (title: string): JSX.Element => (
   </span>
 );
 
-export default function SidebarMenu({ submenus }: SidebarMenuProps) {
+export default function SidebarMenu({ submenus, handleCategoryClick }: SidebarMenuProps) {
   const firstMenu = submenus[0];
   const firstMenuItem = firstMenu.categories[0];
 
@@ -24,8 +24,10 @@ export default function SidebarMenu({ submenus }: SidebarMenuProps) {
     >
       {submenus.map(({ title, categories }) => (
         <SubMenu key={title} title={createTitle(title)}>
-          {categories.map(category => (
-            <Item key={category.title}>{category.title}</Item>
+          {categories.map((category) => (
+            <Item key={category.title} onClick={handleCategoryClick(category.title)}>
+              {category.title}
+            </Item>
           ))}
         </SubMenu>
       ))}

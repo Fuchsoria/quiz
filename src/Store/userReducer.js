@@ -1,7 +1,7 @@
 import { handleActions } from 'redux-actions';
 import { setProfile } from './userActions';
 
-const initialState = [];
+const initialState = {};
 
 export default handleActions(
   {
